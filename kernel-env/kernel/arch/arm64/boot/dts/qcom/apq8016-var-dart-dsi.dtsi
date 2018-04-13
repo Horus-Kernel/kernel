@@ -6,22 +6,24 @@
 	};
 };
 
-&dsi0_out {
-	remote-endpoint = <&panel_in>;
-	data-lanes = <0 1 2 3>;
-};
-
 
 &mdss_dsi0 {
     #address-cells = <1>;
     #size-cells = <0>;
  	status = "ok";
-	panel:panel@0{
+	panel:panel@0 {
 		reg = <0>;
 		status = "ok";
 		compatible = "fet,f99115a";
 		backlight = <&backlight>;
-		power-supply = <&vph_pwr_vreg>;
+
+		vddp-supply = <&pm8916_l17>;
+		iovcc-supply = <&pm8916_l18>;
+
+		enable-gpios = <&pm8916_gpios 96 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&msmgpio 112 GPIO_ACTIVE_LOW>;
+		//power ic
+
 
 		port {
 			panel_in: endpoint {
