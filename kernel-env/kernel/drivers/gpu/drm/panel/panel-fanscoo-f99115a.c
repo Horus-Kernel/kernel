@@ -287,11 +287,11 @@ static int fet_panel_init(struct fet_panel *fet)
 	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xCA, (u8[]){0x00, 0x06, 0x0A, 0x0F, 0x17,
-	 										   0x1D, 0x22, 0x22, 0x1F, 0x1D, 
-											   0x1B, 0x17, 0x13, 0x0C, 0x00, 
-											   0x00, 0x06, 0x0A, 0x0F, 0x17, 
-											   0x1D, 0x22, 0x22, 0x1F, 0x1D, 
-											   0x1B, 0x17, 0x13, 0x0C, 0x00}, 30);
+						   0x1D, 0x22, 0x22, 0x1F, 0x1D, 
+						   0x1B, 0x17, 0x13, 0x0C, 0x00, 
+						   0x00, 0x06, 0x0A, 0x0F, 0x17, 
+						   0x1D, 0x22, 0x22, 0x1F, 0x1D, 
+						   0x1B, 0x17, 0x13, 0x0C, 0x00}, 30);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Gamma Setting Common (CAh): %d\n"
 			, ret);
@@ -301,10 +301,10 @@ static int fet_panel_init(struct fet_panel *fet)
 	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xCB, (u8[]){0x00, 0x00, 0x00, 0x00,
-											   0x00, 0xFC, 0x00, 0x00, 
-											   0x00, 0x00, 0x00, 0xFC, 
-											   0x00, 0x00, 0x00, 0x00, 
-											   0x00, 0xFC, 0x00}, 19);
+						   0x00, 0xFC, 0x00, 0x00, 
+						   0x00, 0x00, 0x00, 0xFC, 
+						   0x00, 0x00, 0x00, 0x00, 
+						   0x00, 0xFC, 0x00}, 19);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Gamma Digital Common (CBh): %d\n"
 			, ret);
@@ -615,8 +615,10 @@ static int fet_panel_probe(struct mipi_dsi_device *dsi)
 
 	dsi->lanes = 4;
 	dsi->format = MIPI_DSI_FMT_RGB888;
-	dsi->mode_flags =  MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_MODE_VIDEO |
-			   		   MIPI_DSI_CLOCK_NON_CONTINUOUS | MIPI_DSI_MODE_VIDEO_BURST;
+	/*SEE https://discuss.96boards.org/t/linux-mipi-dsi-panel-support/196/23 */
+	dsi->mode_flags =  MIPI_DSI_MODE_VIDEO |
+			  MIPI_DSI_CLOCK_NON_CONTINUOUS |
+			  MIPI_DSI_MODE_VIDEO_BURST; 
 
 	fet = devm_kzalloc(&dsi->dev, sizeof(*fet), GFP_KERNEL);
 	if (!fet)
