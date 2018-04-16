@@ -19,7 +19,7 @@
 // #else
 // 	#include "apq8016-var-dart-lvds.dtsi"
 // #endif
-#include "apq8016-var-dart-dsi.dtsi"
+// #include "apq8016-var-dart-dsi.dtsi"
 / {
 	model = "Variscite LTD. VAR-DART410";
 	compatible ="qcom,apq8016-dart", "qcom,apq8016", "qcom,dart";

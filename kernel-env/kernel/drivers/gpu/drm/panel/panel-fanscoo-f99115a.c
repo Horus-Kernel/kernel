@@ -33,8 +33,8 @@
 #include <video/mipi_display.h>
 
 static const char * const regulator_names[] = {
-	"vddp-supply",
-	"iovcc-supply"
+	"vdd",
+	"vddio"
 };
 
 struct fet_panel {

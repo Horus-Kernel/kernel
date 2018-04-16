@@ -24,7 +24,7 @@ cd ./kernel
 ./build.sh $CROSS_COMPILE $1
 cd ..
 ./skales/dtbTool -o dt.img -s 2048 kernel/arch/arm64/boot/dts/qcom/
-export cmdline="root=/dev/mmcblk0p10 rw rootwait console=tty0 console=ttyMSM0,115200n8 consoleblank=0"
+export cmdline="root=/dev/mmcblk0p10 rw rootwait console=tty0 console=ttyMSM0,115200n8 drm.debug=15 loglevel=10"
 ./skales/mkbootimg --kernel kernel/arch/arm64/boot/Image \
           --ramdisk ramdisk/initrd.img-4.9.56-linaro-lt-qcom \
           --output boot-sd410.img \

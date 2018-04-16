@@ -17,8 +17,8 @@
 		compatible = "fet,f99115a";
 		backlight = <&backlight>;
 
-		vddp-supply = <&pm8916_l17>;
-		iovcc-supply = <&pm8916_l18>;
+		vdd-supply = <&pm8916_l17>;
+		vddio-supply = <&pm8916_l18>;
 
 		enable-gpios = <&pm8916_gpios 96 GPIO_ACTIVE_HIGH>;
 		reset-gpios = <&msmgpio 112 GPIO_ACTIVE_LOW>;
