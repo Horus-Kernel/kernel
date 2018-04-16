@@ -33,8 +33,8 @@
 #include <video/mipi_display.h>
 
 static const char * const regulator_names[] = {
-	"vdd-supply",
-	"vddio-supply"
+	"vddp-supply",
+	"iovcc-supply"
 };
 
 struct fet_panel {
@@ -542,8 +542,6 @@ drm_panel_create_dsi_backlight(struct mipi_dsi_device *dsi)
 	props.type = BACKLIGHT_RAW;
 	props.brightness = 255;
 	props.max_brightness = 255;
-
-	printk("create_dsi_tetalight\n");
 
 	return devm_backlight_device_register(dev, dev_name(dev), dev, dsi,
 					      &dsi_bl_ops, &props);
