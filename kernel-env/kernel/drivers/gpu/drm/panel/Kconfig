@@ -18,6 +18,16 @@ config DRM_PANEL_SIMPLE
 	  that it can be automatically turned off when the panel goes into a
 	  low power state.
 
+config DRM_PANEL_FANSCOO_F99115A
+	tristate "FANSCOO F99115A RGB DSI panel"
+	depends on OF
+	depends on DRM_MIPI_DSI
+	depends on BACKLIGHT_CLASS_DEVICE
+	help
+	  Say Y here if you want to enable support for Fanscoo DSI video mode
+	  panel as found in Fanscoo Eletronics Technology (2014) devices.
+The panel has a 720(RGB)×1280 (WUXGA) resolution
+
 config DRM_PANEL_SAMSUNG_LD9040
 	tristate "Samsung LD9040 RGB/SPI panel"
 	depends on OF && SPI
