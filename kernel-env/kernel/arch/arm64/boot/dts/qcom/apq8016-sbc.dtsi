@@ -259,6 +259,13 @@
 				linux,default-trigger = "bt";
 				default-state = "off";
 			};
+			
+			led@7 { //add backlight here
+				label = "apq8016-sbc:white:bklt";
+				gpios = <&pm8916_mpps 4 GPIO_ACTIVE_HIGH>;
+				linux,default-trigger = "backlight";
+				default-state = "on";
+};
 		};
 
 		camera_vdddo_1v8: fixedregulator@0 {
@@ -400,7 +407,7 @@
 	status = "ok";
 
 	adv_bridge: bridge@39 {
-		status = "ok";
+		status = "disabled";
 		compatible = "adi,adv7533";
 		reg = <0x39>;
 		interrupt-parent = <&msmgpio>;
@@ -429,10 +436,29 @@
 
 &mdss_dsi0 {
 	status = "ok";
+	//TODO  mdss suplies
+	panel@0 {
+		reg = <0>;
+		compatible = "fet,f99115a";
+		//TODO panel supplies, enable-gpios, reset-gpios...
+		port {
+			panel_in: endpoint {
+				remote-endpoint = <&dsi_out>;
+			};
+		};
+	};
 
-	port {
-		dsi_out: endpoint {
-			remote-endpoint = <&adv_in>;
+	ports {
+		port@0 {
+			dsi0_in: endpoint {
+				remote_endpoint = <&mdp_dsi_out>;
+			};
+		};
+		port@1 {
+			dsi0_out: endpoint {
+				remote-endpoint = <&panel_int>;
+				data-lanes = <0 1 2 3>;
+			};
 		};
 	};
 };
