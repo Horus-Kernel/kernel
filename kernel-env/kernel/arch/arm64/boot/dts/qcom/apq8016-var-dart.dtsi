@@ -188,6 +188,13 @@
 				linux,default-trigger = "hci0-power";
 				default-state = "off";
 			};
+			//add backlight here
+			led@7 {
+				label = "apq8016-var-dart:white:bklt";
+				gpios = <&pm8916_mpps 4 GPIO_ACTIVE_HIGH>;
+				linux,default-trigger = "backlight";
+				default-state = "on";
+			};
 		};
 
 		sdhci@07824000 {
@@ -255,10 +262,33 @@
 			};
 
 			mdss_dsi0: dsi@1a98000 {
+				#address-cells = <1>;
+   				#size-cells = <0>;
 				status = "okay";
 				vdd-supply = <&pm8916_l6>;
 				vdda-supply = <&pm8916_l2>;
 				vddio-supply = <&pm8916_l17>;
+				panel:panel@0 {
+					reg = <0>;
+					status = "okay";
+					compatible = "fet,f99115a";
+					interrupt-parent = <&msmgpio>;
+					// backlight = <&backlight>;
+
+					vdd-supply = <&pm8916_l17>;
+					vddio-supply = <&pm8916_l18>;
+
+					enable-gpios = <&pm8916_gpios 96 GPIO_ACTIVE_HIGH>;
+					reset-gpios = <&msmgpio 112 GPIO_ACTIVE_LOW>;
+					//power ic
+
+
+					port {
+						panel_in: endpoint {
+							remote-endpoint = <&dsi0_out>;
+						};
+					};
+				};
 
 				ports {
 					port@0 {
