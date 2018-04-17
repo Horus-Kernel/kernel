@@ -1,0 +1,71 @@
+&tlmm_pinmux {
+	card_detect: card-detect {
+		mux {
+			pins = "gpio26";
+			function = "gpio";
+			bias-disable;
+		};
+	};
+
+	pcie_pins: pcie-pinmux {
+		mux {
+			pins = "gpio27";
+			function = "gpio";
+		};
+		conf {
+			pins = "gpio27";
+			drive-strength = <12>;
+			bias-disable;
+		};
+	};
+
+	user_leds: user-leds {
+		mux {
+			pins = "gpio3", "gpio7", "gpio10", "gpio11";
+			function = "gpio";
+		};
+
+		conf {
+			pins = "gpio3", "gpio7", "gpio10", "gpio11";
+			function = "gpio";
+			output-low;
+		};
+	};
+
+	magneto_pins: magneto-pins {
+		mux {
+			pins = "gpio31", "gpio48";
+			function = "gpio";
+			bias-disable;
+		};
+	};
+
+	wcnss_pin_a: wcnss {
+		bt {
+			function = "riva_bt";
+			pins = "gpio16", "gpio17";
+		};
+
+		fm {
+			function = "riva_fm";
+			pins = "gpio14", "gpio15";
+		};
+
+		wlan {
+			function = "riva_wlan";
+			pins = "gpio64", "gpio65", "gpio66", "gpio67", "gpio68";
+			drive-strength = <6>;
+			bias-pull-up;
+		};
+	};
+};
+
+&pm8921_mpps {
+	mpp_leds: mpp-leds {
+		pinconf {
+			pins = "mpp7", "mpp8";
+			function = "digital";
+			output-low;
+		};
+	};
+};

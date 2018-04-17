@@ -1,0 +1,12 @@
+[    1.444154] clk: couldn't get parent clock 0 for /soc/mdss@1a00000/dsi@1a98000
+[    3.139762] 1a98000.dsi supply gdsc not found, using dummy regulator
+[    3.139904] 1a98000.dsi supply gdsc not found, using dummy regulator
+[    3.140707] 1a98000.dsi.0 supply vdd-supply not found, using dummy regulator
+[    3.140759] 1a98000.dsi.0 supply vddio-supply not found, using dummy regulator
+[    3.140817] create_dsi_tetalight
+[    3.140949] msm 1a00000.mdss: bound 1a98000.dsi (ops dsi_ops)
+[    3.546116] dsi_link_clk_enable_6g: Failed to set rate pixel clk, -22
+[    3.546118] dsi_clk_ctrl: Can not enable link clk, -22
+[    3.546123] msm_dsi_host_power_on: failed to enable clocks. ret=-22
+[    3.546127] dsi_mgr_bridge_pre_enable: power on host 0 failed, -22
+
