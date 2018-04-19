@@ -76,6 +76,7 @@
 			 <&gcc GCC_MDSS_VSYNC_CLK>;
 		clock-names = "iface_clk", "bus_clk", "core_clk_src",
 			      "core_clk", "lut_clk", "vsync_clk";
+		
 	};
 
 	mdss_dsi0: qcom,mdss_dsi@1a98000 {
