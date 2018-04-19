@@ -5,7 +5,7 @@ export CROSS_COMPILE=../$1
 export ARCH=arm64
 if [[ $2 = "full" ]]; then
 	make mrproper
-	make defconfig distro.config var-sd410.config
+	make defconfig fanscoo.config
 fi
 make KERNELRELEASE=kernel-16.09-qcom Image dtbs  -j$[$(nproc) + 1]
 #rm ./arch/arm64/boot/dts/qcom/apq8016-var-dart.dtb

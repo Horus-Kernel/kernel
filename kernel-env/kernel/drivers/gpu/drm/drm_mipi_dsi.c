@@ -935,6 +935,56 @@ int mipi_dsi_dcs_set_tear_on(struct mipi_dsi_device *dsi,
 EXPORT_SYMBOL(mipi_dsi_dcs_set_tear_on);
 
 /**
+ * mipi_dsi_dcs_set_display_brightness() - sets the brightness value of the
+ *    display
+ * @dsi: DSI peripheral device
+ * @brightness: brightness value
+ *
+ * Return: 0 on success or a negative error code on failure.
+ */
+int mipi_dsi_dcs_set_display_brightness(struct mipi_dsi_device *dsi,
+					u16 brightness)
+{
+	u8 payload[2] = { brightness & 0xff, brightness >> 8 };
+	ssize_t err;
+
+	err = mipi_dsi_dcs_write(dsi, 0x51,
+				 payload, sizeof(payload));
+	if (err < 0)
+		return err;
+
+	return 0;
+}
+EXPORT_SYMBOL(mipi_dsi_dcs_set_display_brightness);
+
+/**
+ * mipi_dsi_dcs_get_display_brightness() - gets the current brightness value
+ *    of the display
+ * @dsi: DSI peripheral device
+ * @brightness: brightness value
+ *
+ * Return: 0 on success or a negative error code on failure.
+ */
+int mipi_dsi_dcs_get_display_brightness(struct mipi_dsi_device *dsi,
+					u16 *brightness)
+{
+	ssize_t err;
+
+	err = mipi_dsi_dcs_read(dsi, 0x52,
+				brightness, sizeof(*brightness));
+	if (err <= 0) {
+		if (err == 0)
+			err = -ENODATA;
+
+		return err;
+	}
+
+	return 0;
+}
+EXPORT_SYMBOL(mipi_dsi_dcs_get_display_brightness);
+
+
+/**
  * mipi_dsi_dcs_set_pixel_format() - sets the pixel format for the RGB image
  *    data used by the interface
  * @dsi: DSI peripheral device
@@ -1026,6 +1076,8 @@ static int __init mipi_dsi_bus_init(void)
 	return mipi_dsi_driver_register(&dummy_dsi_driver);
 }
 postcore_initcall(mipi_dsi_bus_init);
+
+
 
 MODULE_AUTHOR("Andrzej Hajda <a.hajda@samsung.com>");
 MODULE_DESCRIPTION("MIPI DSI Bus");

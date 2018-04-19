@@ -104,7 +104,7 @@ static int fet_panel_init(struct fet_panel *fet)
 	 * BIT(3) BL = 1    Backlight Control On
 	 * BIT(2) DD = 0    Display Dimming is Off
 	 */
-	ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY,
+	ret = mipi_dsi_dcs_write(dsi, 0x53,
 				 (u8[]){ 0x24 }, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to write control display: %d\n", ret);
@@ -112,7 +112,7 @@ static int fet_panel_init(struct fet_panel *fet)
 	}
 
 	/* CABC off */
-	ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_POWER_SAVE,
+	ret = mipi_dsi_dcs_write(dsi, 0x55,
 				 (u8[]){ 0x00 }, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set cabc off: %d\n", ret);
