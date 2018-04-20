@@ -616,9 +616,8 @@ static int fet_panel_probe(struct mipi_dsi_device *dsi)
 	dsi->lanes = 4;
 	dsi->format = MIPI_DSI_FMT_RGB888;
 	/*SEE https://discuss.96boards.org/t/linux-mipi-dsi-panel-support/196/23 */
-	dsi->mode_flags =  MIPI_DSI_MODE_VIDEO |
-			  MIPI_DSI_CLOCK_NON_CONTINUOUS |
-			  MIPI_DSI_MODE_VIDEO_BURST; 
+	dsi->mode_flags =  MIPI_DSI_MODE_VIDEO_HSE | MIPI_DSI_MODE_VIDEO |
+			  MIPI_DSI_CLOCK_NON_CONTINUOUS | MIPI_DSI_MODE_VIDEO_BURST; 
 
 	fet = devm_kzalloc(&dsi->dev, sizeof(*fet), GFP_KERNEL);
 	if (!fet)
