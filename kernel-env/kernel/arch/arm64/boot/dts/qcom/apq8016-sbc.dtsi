@@ -408,7 +408,7 @@
 &blsp_i2c4 {
 	status = "ok";
 
-	adv_bridge: bridge@39 {
+/*	adv_bridge: bridge@39 {
 		status = "disabled";
 		compatible = "adi,adv7533";
 		reg = <0x39>;
@@ -429,24 +429,11 @@
 			};
 		};
 
-	};
+	};*/
 };
 
 &blsp_i2c6 {
 	status = "ok";
-};
-
-
-&mdss_mdp {
-	status = "ok";
-	ports {
-		port@1 {
-			mdp_dsi_out: endpoint {
-				remote-endpoint = <&dsi0_in>;
-			};
-		};
-	};
-
 };
 
 &mdss_dsi0 {
@@ -457,12 +444,9 @@
 		//TODO panel supplies, enable-gpios, reset-gpios...
 		interrupt-parent = <&msmgpio>;
 
-		enable-gpios = <&pm8916_gpios 96 GPIO_ACTIVE_HIGH>;
+		enable-gpios = <&msmgpio 96 GPIO_ACTIVE_HIGH>;
 		reset-gpios = <&msmgpio 112 GPIO_ACTIVE_LOW>;
 
-		vdd-supply = <&pm8916_l2>;
-		vddio-supply = <&pm8916_l6>;
-		
 		port {
 			panel_in: endpoint {
 				remote-endpoint = <&dsi0_out>;
@@ -470,17 +454,10 @@
 		};
 	};
 
-	ports {
-		port@0 {
-			dsi0_in: endpoint {
-				remote_endpoint = <&mdp_dsi_out>;
-			};
-		};
-		port@1 {
-			dsi0_out: endpoint {
-				remote-endpoint = <&panel_in>;
-				data-lanes = <0 1 2 3>;
-			};
+	port {
+		dsi0_out: endpoint {
+			remote-endpoint = <&panel_in>;
+			data-lanes = <0 1 2 3>;
 		};
 	};
 };
