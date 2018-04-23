@@ -215,6 +215,16 @@
 			pinctrl-0 = <&sdc2_clk_on &sdc2_cmd_on &sdc2_data_on &sdc2_cd_on>;
 			pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
 
+			#address-cells = <0>;
+			interrupt-parent = <&sdhc_2>;
+			interrupts = <0 1 2>;
+			#interrupt-cells = <1>;
+			interrupt-map-mask = <0xffffffff>;
+			interrupt-map = <0 &intc 0 125 0
+							1 &intc 0 221 0
+							2 &msmgpio 38 0>;
+			interrupt-names = "hc_irq", "pwr_irq", "status_irq";
+
 			cd-gpios = <&msmgpio 38 GPIO_ACTIVE_LOW>;
 			status = "okay";
 		};
@@ -248,7 +258,6 @@
 			status = "okay";
 			vdd-supply = <&pm8916_l6>;
 
-
 			mdp@1a01000 {
 				status = "okay";
 
@@ -268,6 +277,7 @@
 				vdd-supply = <&pm8916_l6>;
 				vdda-supply = <&pm8916_l2>;
 				vddio-supply = <&pm8916_l17>;
+
 				panel:panel@0 {
 					reg = <0>;
 					status = "okay";
@@ -490,6 +500,7 @@
         status = "okay";
         clocks = <&gcc GCC_CODEC_DIGCODEC_CLK>;
         clock-names = "mclk";
+		//qcom,lpass-codec-core = <&lpass_codec>;
 };
 
 &spmi_pon {

@@ -71,70 +71,17 @@ static int fet_panel_init(struct fet_panel *fet)
 
 	usleep_range(10000, 20000);
 
-
-	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
-	if (ret < 0) {
-		dev_err(dev, "failed to set exit sleep mode: %d\n", ret);
-		return ret;
-	}
-
-	msleep(120);
-
-	ret = mipi_dsi_dcs_set_pixel_format(dsi, MIPI_DCS_PIXEL_FMT_24BIT << 4);
-	if (ret < 0) {
-		dev_err(dev, "failed to set pixel format: %d\n", ret);
-		return ret;
-	}
-
-	ret = mipi_dsi_dcs_set_column_address(dsi, 0, fet->mode->hdisplay - 1);
-	if (ret < 0) {
-		dev_err(dev, "failed to set column address: %d\n", ret);
-		return ret;
-	}
-
-	ret = mipi_dsi_dcs_set_page_address(dsi, 0, fet->mode->vdisplay - 1);
-	if (ret < 0) {
-		dev_err(dev, "failed to set page address: %d\n", ret);
-		return ret;
-	}
-
-	/*
-	 * BIT(5) BCTRL = 1 Backlight Control Block On, Brightness registers
-	 *                  are active
-	 * BIT(3) BL = 1    Backlight Control On
-	 * BIT(2) DD = 0    Display Dimming is Off
-	 */
-	ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_CONTROL_DISPLAY,
-				 (u8[]){ 0x24 }, 1);
-	if (ret < 0) {
-		dev_err(dev, "failed to write control display: %d\n", ret);
-		return ret;
-	}
-
-	/* CABC off */
-	ret = mipi_dsi_dcs_write(dsi, MIPI_DCS_WRITE_POWER_SAVE,
-				 (u8[]){ 0x00 }, 1);
-	if (ret < 0) {
-		dev_err(dev, "failed to set cabc off: %d\n", ret);
-		return ret;
-	}
-
-
 	ret = mipi_dsi_dcs_write(dsi, 0xB0, (u8[]){0x04}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set mcap: %d\n", ret);
 		return ret;
 	}
 
-	mdelay(10);
-
 	ret = mipi_dsi_dcs_write(dsi, 0xB3, (u8[]){0x00}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set Clock settings: %d\n", ret);
 		return ret;
 	}
-
-	mdelay(10);
 
 	/* Interface setting, video mode */
 	ret = mipi_dsi_dcs_write(dsi, 0xC4 ,(u8[])
@@ -145,16 +92,12 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-	mdelay(20);
-
 	ret = mipi_dsi_dcs_write(dsi, 0xB0, (u8[]){0x04}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for mcap: %d\n"
 			, ret);
 		return ret;
 	}
-
-	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xB6, (u8[]){0x32}, 1);
 	if (ret < 0) {
@@ -163,16 +106,12 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-	mdelay(20);
-
 	ret = mipi_dsi_dcs_write(dsi, 0xE5, (u8[]){0x02}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Register write Control(E5h): %d\n"
 			, ret);
 		return ret;
 	}
-
-	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xC0, (u8[]){0x23, 0xB2, 0x0D, 0x10, 0x02, 0x80}, 6);
 	if (ret < 0) {
@@ -181,16 +120,12 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-	mdelay(20);
-
 	ret = mipi_dsi_dcs_write(dsi, 0xC1, (u8[]){0xA0, 0x70, 0x60, 0x60, 0x01, 0x01, 0xF0}, 7);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for DisplaY h-Timing Setting(C1h): %d\n"
 			, ret);
 		return ret;
 	}
-
-	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xC5, (u8[]){0x07, 0x00, 0x37}, 3);
 	if (ret < 0) {
@@ -199,8 +134,6 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-	mdelay(20);
-
 	ret = mipi_dsi_dcs_write(dsi, 0xC6, (u8[]){0x21}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Panel Drive Setting (C6h): %d\n"
@@ -208,16 +141,12 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-	mdelay(20);
-
 	ret = mipi_dsi_dcs_write(dsi, 0xD0, (u8[]){0x05, 0x8B, 0x42}, 3);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Power Setting of VCI, VGH, VGL(D0h): %d\n"
 			, ret);
 		return ret;
 	}
-	
-	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xD1, (u8[]){0x03}, 1);
 	if (ret < 0) {
@@ -226,17 +155,12 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-
-	mdelay(20);
-
 	ret = mipi_dsi_dcs_write(dsi, 0xD2, (u8[]){0x81, 0x1F}, 2);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Power Setting of External Booster (D2h): %d\n"
 			, ret);
 		return ret;
 	}
-	
- 	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xD3, (u8[]){0x11, 0x33}, 2);
 	if (ret < 0) {
@@ -245,16 +169,12 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-	mdelay(20);
-
 	ret = mipi_dsi_dcs_write(dsi, 0xD4, (u8[]){0x4A}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for VCOMDC Setting (D4h): %d\n"
 			, ret);
 		return ret;
 	}
-
-	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xD5, (u8[]){0x32, 0x32}, 2);
 	if (ret < 0) {
@@ -263,16 +183,12 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-	mdelay(20);
-
 	ret = mipi_dsi_dcs_write(dsi, 0xD6, (u8[]){0x01}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Abnormal off Sequence Control (D6h): %d\n"
 			, ret);
 		return ret;
 	}
-	
-	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xC8, (u8[]){0x61, 0x4E, 0x42, 0xAA, 0x90, 0x5A, 0x6B,
 						   0xAD, 0xB5, 0xD6, 0x5A, 0x6B, 0x85, 0x51, 
@@ -283,8 +199,6 @@ static int fet_panel_init(struct fet_panel *fet)
 			, ret);
 		return ret;
 	}
-
-	mdelay(20);
 
 	ret = mipi_dsi_dcs_write(dsi, 0xCA, (u8[]){0x00, 0x06, 0x0A, 0x0F, 0x17,
 						   0x1D, 0x22, 0x22, 0x1F, 0x1D, 
@@ -297,22 +211,14 @@ static int fet_panel_init(struct fet_panel *fet)
 			, ret);
 		return ret;
 	}
-	
-	mdelay(20);
 
-	ret = mipi_dsi_dcs_write(dsi, 0xCB, (u8[]){0x00, 0x00, 0x00, 0x00,
-						   0x00, 0xFC, 0x00, 0x00, 
-						   0x00, 0x00, 0x00, 0xFC, 
-						   0x00, 0x00, 0x00, 0x00, 
-						   0x00, 0xFC, 0x00}, 19);
+	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
 	if (ret < 0) {
-		dev_err(dev, "failed to set default values for Gamma Digital Common (CBh): %d\n"
-			, ret);
+		dev_err(dev, "failed to set exit sleep mode: %d\n", ret);
 		return ret;
 	}
-	
-	mdelay(20);
 
+	msleep(120);
 
 	return 0;
 
@@ -457,7 +363,7 @@ static int fet_panel_enable(struct drm_panel *panel)
 }
 
 static const struct drm_display_mode default_mode = {
-		.clock = 204800,
+		.clock = 63037,
 		.hdisplay = 720, //x
 		.hsync_start = 720 + 40, // x + hfp 
 		.hsync_end = 720 + 40 + 12, // x + hfp + hsl
