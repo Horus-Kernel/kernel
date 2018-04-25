@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 
+ * Copyright (C) 2018
  *
  * Author: Francisco Leonardo Jales Martins <leonardo@larces.uece.br>
  *
@@ -31,6 +31,28 @@
 #include <drm/drm_panel.h>
 
 #include <video/mipi_display.h>
+
+/* Manufacturer Command Set */
+#define MCS_INTERFACE_SETTING			0xc4
+#define MCS_CLK_SETTINGS				0xb3
+#define MCS_MCAP						0xb0
+#define MCS_DSI_SETTING					0xb6
+#define MCS_REG_WRITE_CTRL				0xe5
+#define MCS_DISPLAY_SETTING				0xc0
+#define MCS_DISPLAY_H_TIMING_SETTING	0xc1
+#define MCS_DISPLAY_V_TIMING_SETTING	0xc5
+#define MCS_PANEL_DRIVER_SETTING		0xc6
+#define MCS_PWR_SETTING_VCI				0xd0
+#define MCS_PWR_SETTING_VCL				0xd1
+#define MCS_PWR_SETTING_EXT_BOOSTER		0xd2
+#define MCS_PWR_SETTING_INT_CIRCUIT		0xd3
+#define MCS_VCOMDC_SETTING				0xd4
+#define MCS_VPLVL_VNLVL_SETTING			0xd5
+#define MCS_ABNORMAL_OFF_SEQ_SETTING	0xd6
+#define MCS_GOUT_PIN_ASSIGNMENT			0xc8
+#define MCS_GAMMA_SETTING_COMMON		0xca
+
+
 
 static const char * const regulator_names[] = {
 	"vdd",
@@ -71,127 +93,144 @@ static int fet_panel_init(struct fet_panel *fet)
 
 	usleep_range(10000, 20000);
 
-	ret = mipi_dsi_dcs_write(dsi, 0xB0, (u8[]){0x04}, 1);
+	ret = mipi_dsi_dcs_write(dsi, MCS_MCAP,
+					(u8[]){0x04}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set mcap: %d\n", ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xB3, (u8[]){0x00}, 1);
+	ret = mipi_dsi_dcs_write(dsi, MCS_CLK_SETTINGS,
+					(u8[]){0x00}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set Clock settings: %d\n", ret);
 		return ret;
 	}
 
 	/* Interface setting, video mode */
-	ret = mipi_dsi_dcs_write(dsi, 0xC4 ,(u8[])
-				     { 0xBC, 0xB0, 0x81}, 3);
+	ret = mipi_dsi_dcs_write(dsi, MCS_INTERFACE_SETTING ,
+					(u8[]){ 0xBC, 0xB0, 0x81}, 3);
 	if (ret < 0) {
 		dev_err(dev, "failed to set display interface setting: %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xB0, (u8[]){0x04}, 1);
+	ret = mipi_dsi_dcs_write(dsi, MCS_MCAP,
+					(u8[]){0x04}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for mcap: %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xB6, (u8[]){0x32}, 1);
+	ret = mipi_dsi_dcs_write(dsi, MCS_DSI_SETTING,
+					(u8[]){0x32}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for DSI Setting(B6h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xE5, (u8[]){0x02}, 1);
+	ret = mipi_dsi_dcs_write(dsi, MCS_REG_WRITE_CTRL,
+					(u8[]){0x02}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Register write Control(E5h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xC0, (u8[]){0x23, 0xB2, 0x0D, 0x10, 0x02, 0x80}, 6);
+	ret = mipi_dsi_dcs_write(dsi, MCS_DISPLAY_SETTING,
+					(u8[]){0x23, 0xB2, 0x0D, 0x10, 0x02, 0x80}, 6);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Display setting (C0h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xC1, (u8[]){0xA0, 0x70, 0x60, 0x60, 0x01, 0x01, 0xF0}, 7);
+	ret = mipi_dsi_dcs_write(dsi, MCS_DISPLAY_H_TIMING_SETTING,
+					(u8[]){0xA0, 0x70, 0x60, 0x60, 0x01, 0x01, 0xF0}, 7);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for DisplaY h-Timing Setting(C1h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xC5, (u8[]){0x07, 0x00, 0x37}, 3);
+	ret = mipi_dsi_dcs_write(dsi, MCS_DISPLAY_V_TIMING_SETTING,
+					(u8[]){0x07, 0x00, 0x37}, 3);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Display V-Timing setting (C5h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xC6, (u8[]){0x21}, 1);
+	ret = mipi_dsi_dcs_write(dsi, MCS_PANEL_DRIVER_SETTING, 
+					(u8[]){0x21}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Panel Drive Setting (C6h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xD0, (u8[]){0x05, 0x8B, 0x42}, 3);
+	ret = mipi_dsi_dcs_write(dsi, MCS_PWR_SETTING_VCI,
+					(u8[]){0x05, 0x8B, 0x42}, 3);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Power Setting of VCI, VGH, VGL(D0h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xD1, (u8[]){0x03}, 1);
+	ret = mipi_dsi_dcs_write(dsi, MCS_PWR_SETTING_VCL,
+					(u8[]){0x03}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Power Setting of VCL (D1h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xD2, (u8[]){0x81, 0x1F}, 2);
+	ret = mipi_dsi_dcs_write(dsi, MCS_PWR_SETTING_EXT_BOOSTER,
+					(u8[]){0x81, 0x1F}, 2);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Power Setting of External Booster (D2h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xD3, (u8[]){0x11, 0x33}, 2);
+	ret = mipi_dsi_dcs_write(dsi, MCS_PWR_SETTING_INT_CIRCUIT,
+					(u8[]){0x11, 0x33}, 2);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Power Setting of Internal circuit (D3h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xD4, (u8[]){0x4A}, 1);
+	ret = mipi_dsi_dcs_write(dsi, MCS_VCOMDC_SETTING,
+					(u8[]){0x4A}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for VCOMDC Setting (D4h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xD5, (u8[]){0x32, 0x32}, 2);
+	ret = mipi_dsi_dcs_write(dsi, MCS_VPLVL_VNLVL_SETTING,
+					(u8[]){0x32, 0x32}, 2);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for VPLVL/VNLVL Setting (D5h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xD6, (u8[]){0x01}, 1);
+	ret = mipi_dsi_dcs_write(dsi, MCS_ABNORMAL_OFF_SEQ_SETTING,
+					(u8[]){0x01}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Abnormal off Sequence Control (D6h): %d\n"
 			, ret);
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xC8, (u8[]){0x61, 0x4E, 0x42, 0xAA, 0x90, 0x5A, 0x6B,
-						   0xAD, 0xB5, 0xD6, 0x5A, 0x6B, 0x85, 0x51, 
+	ret = mipi_dsi_dcs_write(dsi, MCS_GOUT_PIN_ASSIGNMENT, 
+					(u8[]){0x61, 0x4E, 0x42, 0xAA, 0x90, 0x5A, 0x6B,
+						   0xAD, 0xB5, 0xD6, 0x5A, 0x6B, 0x85, 0x51,
 						   0xCA, 0x08, 0x6B, 0xAD, 0xB5, 0xD6, 0x5A,
 						   0x6B, 0xAD, 0x95, 0x14, 0x85, 0xD2, 0x31}, 28);
 	if (ret < 0) {
@@ -200,11 +239,12 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, 0xCA, (u8[]){0x00, 0x06, 0x0A, 0x0F, 0x17,
-						   0x1D, 0x22, 0x22, 0x1F, 0x1D, 
-						   0x1B, 0x17, 0x13, 0x0C, 0x00, 
-						   0x00, 0x06, 0x0A, 0x0F, 0x17, 
-						   0x1D, 0x22, 0x22, 0x1F, 0x1D, 
+	ret = mipi_dsi_dcs_write(dsi, MCS_GAMMA_SETTING_COMMON,
+					(u8[]){0x00, 0x06, 0x0A, 0x0F, 0x17,
+						   0x1D, 0x22, 0x22, 0x1F, 0x1D,
+						   0x1B, 0x17, 0x13, 0x0C, 0x00,
+						   0x00, 0x06, 0x0A, 0x0F, 0x17,
+						   0x1D, 0x22, 0x22, 0x1F, 0x1D,
 						   0x1B, 0x17, 0x13, 0x0C, 0x00}, 30);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Gamma Setting Common (CAh): %d\n"
@@ -365,7 +405,7 @@ static int fet_panel_enable(struct drm_panel *panel)
 static const struct drm_display_mode default_mode = {
 		.clock = 63037,
 		.hdisplay = 720, //x
-		.hsync_start = 720 + 40, // x + hfp 
+		.hsync_start = 720 + 40, // x + hfp
 		.hsync_end = 720 + 40 + 12, // x + hfp + hsl
 		.htotal = 720 + 40 + 12 + 30, // x + hfp + hsl + hpb
 		.vdisplay = 1280, // y
@@ -429,7 +469,7 @@ static int dsi_dcs_bl_update_status(struct backlight_device *bl)
 		return ret;
 
 	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
-	
+
 	return 0;
 }
 
@@ -522,9 +562,10 @@ static int fet_panel_probe(struct mipi_dsi_device *dsi)
 	dsi->lanes = 4;
 	dsi->format = MIPI_DSI_FMT_RGB888;
 	/*SEE https://discuss.96boards.org/t/linux-mipi-dsi-panel-support/196/23 */
-	dsi->mode_flags =  MIPI_DSI_MODE_VIDEO |
-			  MIPI_DSI_CLOCK_NON_CONTINUOUS |
-			  MIPI_DSI_MODE_VIDEO_BURST; 
+	dsi->mode_flags =  MIPI_DSI_MODE_VIDEO_HSE |
+					   MIPI_DSI_MODE_VIDEO |
+				       MIPI_DSI_CLOCK_NON_CONTINUOUS |
+					   MIPI_DSI_MODE_VIDEO_BURST;
 
 	fet = devm_kzalloc(&dsi->dev, sizeof(*fet), GFP_KERNEL);
 	if (!fet)
