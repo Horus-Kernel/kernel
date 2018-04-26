@@ -283,8 +283,6 @@
 					status = "okay";
 					compatible = "fet,f99115a";
 					interrupt-parent = <&msmgpio>;
-					// backlight = <&backlight>;
-
 					vdd-supply = <&pm8916_l17>;
 					vddio-supply = <&pm8916_l18>;
 

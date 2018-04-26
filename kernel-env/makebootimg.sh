@@ -34,13 +34,12 @@ export cmdline="root=/dev/mmcblk0p10 rw rootwait console=tty0 console=ttyMSM0,11
           --cmdline "$cmdline"
 echo "Image: boot-sd410.img. Done!"
 
-echo "Do you want to copy 'boot-sd410.img' to sdcard? [y/n]"
+echo "Do you want to flash 'boot-sd410.img'? [y/n]"
 
 read -n1 ans
 if [[ $ans = "y" ]]; then
     echo "Copying image to sdcard"
-    sudo cp boot-sd410.img /media/$USER/OSes/Debian/
-    sudo umount /media/$USER/OSes && sudo umount /media/$USER/rootfs
+    sudo fastboot flash boot boot-sd410.img
     rm dt.img
     echo Success
  
