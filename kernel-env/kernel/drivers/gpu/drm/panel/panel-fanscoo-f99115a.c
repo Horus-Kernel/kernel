@@ -277,6 +277,7 @@ static int fet_panel_on(struct fet_panel *fet)
 		dev_err(dev, "failed to set display on: %d\n", ret);
 
 	mdelay(10);
+	printk("Set Display On\n");
 
 	return ret;
 }
@@ -296,6 +297,8 @@ static void fet_panel_off(struct fet_panel *fet)
 	ret = mipi_dsi_dcs_set_display_off(dsi);
 	if (ret < 0)
 		dev_err(dev, "failed to set display off: %d\n", ret);
+
+	printk("Commands setup Done!\n");
 
 	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
 	if (ret < 0)
@@ -366,12 +369,14 @@ static int fet_panel_prepare(struct drm_panel *panel)
 		dev_err(dev, "failed to init panel: %d\n", ret);
 		goto poweroff;
 	}
+	printk("Set Display init: prepare: fet_panel_init\n");
 
 	ret = fet_panel_on(fet);
 	if (ret < 0) {
 		dev_err(dev, "failed to set panel on: %d\n", ret);
 		goto poweroff;
 	}
+	printk("Set panel on: prepare: fet_panel_on\n");
 
 	fet->prepared = true;
 
