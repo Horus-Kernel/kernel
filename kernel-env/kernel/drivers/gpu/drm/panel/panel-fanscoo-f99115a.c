@@ -33,15 +33,34 @@
 #include <video/mipi_display.h>
 
 /* Manufacturer Command Set */
-#define MCS_INTERFACE_SETTING			0xc4
-#define MCS_CLK_SETTINGS				0xb3
 #define MCS_MCAP						0xb0
+
+#define MCS_TOUCH_PANEL_CTRL_SETTING    0xb4
 #define MCS_DSI_SETTING					0xb6
-#define MCS_REG_WRITE_CTRL				0xe5
+#define MCS_CABC_IMAGE_SETTING 			0xb7
+#define MCS_BACKLIGHT_SETTING			0xb8
+#define MCS_SRE_SETTING 				0xb9
+#define MCS_OUTLINE_SHARP_SETTING		0xba
+#define MCS_CABC_SRE_CE_EGE_CTRL		0xbb
+
+
+#define MCS_PWM_SETTING					0xbc
+#define MCS_COLOR_ENHAN_SETTING1		0xbd
+#define MCS_COLOR_ENHAN_SETTING2		0xbe
+
 #define MCS_DISPLAY_SETTING				0xc0
 #define MCS_DISPLAY_H_TIMING_SETTING	0xc1
+#define MCS_INTERFACE_SETTING			0xc4
 #define MCS_DISPLAY_V_TIMING_SETTING	0xc5
+
+
 #define MCS_PANEL_DRIVER_SETTING		0xc6
+#define MCS_GOUT_PIN_ASSIGNMENT			0xc8
+#define MCS_GAMMA_SETTING_COMMON		0xca
+
+#define MCS_GAMMA_SETTING_DIGITAL		0xcb
+
+
 #define MCS_PWR_SETTING_VCI				0xd0
 #define MCS_PWR_SETTING_VCL				0xd1
 #define MCS_PWR_SETTING_EXT_BOOSTER		0xd2
@@ -49,8 +68,20 @@
 #define MCS_VCOMDC_SETTING				0xd4
 #define MCS_VPLVL_VNLVL_SETTING			0xd5
 #define MCS_ABNORMAL_OFF_SEQ_SETTING	0xd6
-#define MCS_GOUT_PIN_ASSIGNMENT			0xc8
-#define MCS_GAMMA_SETTING_COMMON		0xca
+
+#define MCS_SET_DDB_WRITE_CTRL			0xe6
+
+
+#define MCS_CLK_SETTINGS				0xb3
+
+#define MCS_REG_WRITE_CTRL				0xe5
+
+
+
+
+
+
+
 
 
 
@@ -100,14 +131,16 @@ static int fet_panel_init(struct fet_panel *fet)
 		return ret;
 	}
 
-	ret = mipi_dsi_dcs_write(dsi, MCS_CLK_SETTINGS,
-					(u8[]){0x00}, 1);
-	if (ret < 0) {
-		dev_err(dev, "failed to set Clock settings: %d\n", ret);
-		return ret;
-	}
+	// ret = mipi_dsi_dcs_write(dsi, MCS_CLK_SETTINGS,
+	// 				(u8[]){0x00}, 1);
+	// if (ret < 0) {
+	// 	dev_err(dev, "failed to set Clock settings: %d\n", ret);
+	// 	return ret;
+	// }
 
 	/* Interface setting, video mode */
+
+	
 	ret = mipi_dsi_dcs_write(dsi, MCS_INTERFACE_SETTING ,
 					(u8[]){ 0xBC, 0xB0, 0x81}, 3);
 	if (ret < 0) {
