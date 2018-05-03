@@ -60,7 +60,6 @@
 
 #define MCS_GAMMA_SETTING_DIGITAL		0xcb
 
-
 #define MCS_PWR_SETTING_VCI				0xd0
 #define MCS_PWR_SETTING_VCL				0xd1
 #define MCS_PWR_SETTING_EXT_BOOSTER		0xd2
@@ -71,19 +70,8 @@
 
 #define MCS_SET_DDB_WRITE_CTRL			0xe6
 
-
 #define MCS_CLK_SETTINGS				0xb3
-
 #define MCS_REG_WRITE_CTRL				0xe5
-
-
-
-
-
-
-
-
-
 
 static const char * const regulator_names[] = {
 	"vdd",
@@ -127,7 +115,7 @@ static int fet_panel_init(struct fet_panel *fet)
 	ret = mipi_dsi_dcs_write(dsi, MCS_MCAP,
 					(u8[]){0x04}, 1);
 	if (ret < 0) {
-		dev_err(dev, "failed to set mcap: %d\n", ret);
+		dev_err(dev, "failed to set MCAP: %d\n", ret);
 		return ret;
 	}
 
@@ -140,22 +128,6 @@ static int fet_panel_init(struct fet_panel *fet)
 
 	/* Interface setting, video mode */
 
-	
-	ret = mipi_dsi_dcs_write(dsi, MCS_INTERFACE_SETTING ,
-					(u8[]){ 0xBC, 0xB0, 0x81}, 3);
-	if (ret < 0) {
-		dev_err(dev, "failed to set display interface setting: %d\n"
-			, ret);
-		return ret;
-	}
-
-	ret = mipi_dsi_dcs_write(dsi, MCS_MCAP,
-					(u8[]){0x04}, 1);
-	if (ret < 0) {
-		dev_err(dev, "failed to set default values for mcap: %d\n"
-			, ret);
-		return ret;
-	}
 
 	ret = mipi_dsi_dcs_write(dsi, MCS_DSI_SETTING,
 					(u8[]){0x32}, 1);
@@ -170,6 +142,13 @@ static int fet_panel_init(struct fet_panel *fet)
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Register write Control(E5h): %d\n"
 			, ret);
+		return ret;
+	}
+
+	ret = mipi_dsi_dcs_write(dsi, MCS_MCAP,
+					(u8[]){0x00}, 1);
+	if (ret < 0) {
+		dev_err(dev, "failed to set MCAP: %d\n", ret);
 		return ret;
 	}
 
@@ -188,6 +167,14 @@ static int fet_panel_init(struct fet_panel *fet)
 			, ret);
 		return ret;
 	}
+	
+	ret = mipi_dsi_dcs_write(dsi, MCS_INTERFACE_SETTING ,
+					(u8[]){ 0xBC, 0xB0, 0x81}, 3);
+	if (ret < 0) {
+		dev_err(dev, "failed to set display interface setting: %d\n"
+			, ret);
+		return ret;
+	}
 
 	ret = mipi_dsi_dcs_write(dsi, MCS_DISPLAY_V_TIMING_SETTING,
 					(u8[]){0x07, 0x00, 0x37}, 3);
@@ -201,6 +188,30 @@ static int fet_panel_init(struct fet_panel *fet)
 					(u8[]){0x21}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Panel Drive Setting (C6h): %d\n"
+			, ret);
+		return ret;
+	}
+
+	ret = mipi_dsi_dcs_write(dsi, MCS_GOUT_PIN_ASSIGNMENT, 
+					(u8[]){0x61, 0x4E, 0x42, 0xAA, 0x90, 0x5A, 0x6B,
+						   0xAD, 0xB5, 0xD6, 0x5A, 0x6B, 0x85, 0x51,
+						   0xCA, 0x08, 0x6B, 0xAD, 0xB5, 0xD6, 0x5A,
+						   0x6B, 0xAD, 0x95, 0x14, 0x85, 0xD2, 0x31}, 28);
+	if (ret < 0) {
+		dev_err(dev, "failed to set default values for GOUT Pin Assignment (C8h): %d\n"
+			, ret);
+		return ret;
+	}
+
+	ret = mipi_dsi_dcs_write(dsi, MCS_GAMMA_SETTING_COMMON,
+					(u8[]){0x00, 0x06, 0x0A, 0x0F, 0x17,
+						   0x1D, 0x22, 0x22, 0x1F, 0x1D,
+						   0x1B, 0x17, 0x13, 0x0C, 0x00,
+						   0x00, 0x06, 0x0A, 0x0F, 0x17,
+						   0x1D, 0x22, 0x22, 0x1F, 0x1D,
+						   0x1B, 0x17, 0x13, 0x0C, 0x00}, 30);
+	if (ret < 0) {
+		dev_err(dev, "failed to set default values for Gamma Setting Common (CAh): %d\n"
 			, ret);
 		return ret;
 	}
@@ -257,30 +268,6 @@ static int fet_panel_init(struct fet_panel *fet)
 					(u8[]){0x01}, 1);
 	if (ret < 0) {
 		dev_err(dev, "failed to set default values for Abnormal off Sequence Control (D6h): %d\n"
-			, ret);
-		return ret;
-	}
-
-	ret = mipi_dsi_dcs_write(dsi, MCS_GOUT_PIN_ASSIGNMENT, 
-					(u8[]){0x61, 0x4E, 0x42, 0xAA, 0x90, 0x5A, 0x6B,
-						   0xAD, 0xB5, 0xD6, 0x5A, 0x6B, 0x85, 0x51,
-						   0xCA, 0x08, 0x6B, 0xAD, 0xB5, 0xD6, 0x5A,
-						   0x6B, 0xAD, 0x95, 0x14, 0x85, 0xD2, 0x31}, 28);
-	if (ret < 0) {
-		dev_err(dev, "failed to set default values for GOUT Pin Assignment (C8h): %d\n"
-			, ret);
-		return ret;
-	}
-
-	ret = mipi_dsi_dcs_write(dsi, MCS_GAMMA_SETTING_COMMON,
-					(u8[]){0x00, 0x06, 0x0A, 0x0F, 0x17,
-						   0x1D, 0x22, 0x22, 0x1F, 0x1D,
-						   0x1B, 0x17, 0x13, 0x0C, 0x00,
-						   0x00, 0x06, 0x0A, 0x0F, 0x17,
-						   0x1D, 0x22, 0x22, 0x1F, 0x1D,
-						   0x1B, 0x17, 0x13, 0x0C, 0x00}, 30);
-	if (ret < 0) {
-		dev_err(dev, "failed to set default values for Gamma Setting Common (CAh): %d\n"
 			, ret);
 		return ret;
 	}

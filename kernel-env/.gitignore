@@ -1,1 +1,3 @@
 .vscode/
+kernel/build-arm64-modules/lib/modules/4.9.56-linaro-lt-qcom/build
+kernel/build-arm64-modules/lib/modules/4.9.56-linaro-lt-qcom/source
